@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LabFix — Campus Lab Resolution System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen flex flex-col antialiased relative bg-[#090d16] text-slate-100">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Ambient Radiant Mesh Glows -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-32 -left-20 w-[34rem] h-[34rem] bg-indigo-600/18 rounded-full blur-[130px] animate-float-1"></div>
+    <div class="absolute top-1/4 -right-20 w-[32rem] h-[32rem] bg-purple-600/15 rounded-full blur-[130px] animate-float-2"></div>
+    <div class="absolute -bottom-32 left-1/3 w-[36rem] h-[36rem] bg-cyan-500/15 rounded-full blur-[130px] animate-float-3"></div>
+  </div>
+
+  <!-- NAVIGATION BAR -->
+  <header class="bg-[#090d16]/85 backdrop-blur-xl border-b border-slate-800/80 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Top Left Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer group" onclick="showHome()">
+        <div class="h-10 w-10 bg-gradient-to-tr from-indigo-500 via-indigo-600 to-cyan-400 rounded-xl flex items-center justify-center text-white text-lg font-black shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-microchip"></i>
+        </div>
+        <div>
+          <span class="text-xl font-black tracking-tight text-white">Lab<span class="text-indigo-400">Fix</span></span>
+          <span class="text-[10px] block text-slate-400 font-bold tracking-widest uppercase">Campus Lab Resolution System</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="hidden md:flex items-center gap-6">
+        <button onclick="showHome()" class="text-xs font-bold text-slate-300 hover:text-white transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-house text-indigo-400"></i> Home
+        </button>
+        <button onclick="showAboutPage()" class="text-xs font-bold text-slate-300 hover:text-white transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-cyan-400"></i> About Us
+        </button>
+        <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-800/50 text-[11px] font-semibold text-emerald-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Campus MG Labs: <strong class="text-white">Active & Monitored</strong></span>
+        </div>
+      </div>
+
+      <!-- Top Right Auth Controls -->
+      <div id="nav-auth-container" class="flex items-center space-x-3"></div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
+
+    <!-- HERO / LANDING (Guest View) -->
+    <section id="guest-view" class="py-12 lg:py-16 text-center max-w-4xl mx-auto relative">
+      
+      <!-- Floating Micro-Widgets -->
+      <div class="hidden lg:flex items-center gap-3 px-4 py-2.5 rounded-2xl glass-panel absolute -left-6 top-8 animate-float-1">
+        <div class="w-8 h-8 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-400 text-sm">
+          <i class="fa-solid fa-keyboard"></i>
+        </div>
+        <div class="text-left text-xs">
+          <span class="font-bold text-white block">Keyboard Replaced</span>
+          <span class="text-slate-400 text-[10px] font-medium">MG-001 • SYS-14 • 1m ago</span>
+        </div>
+      </div>
+
+      <div class="hidden lg:flex items-center gap-3 px-4 py-2.5 rounded-2xl glass-panel absolute -right-6 top-20 animate-float-2">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-sm">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div class="text-left text-xs">
+          <span class="font-bold text-white block">Fast Turnaround</span>
+          <span class="text-emerald-400 font-bold text-[10px]">Avg 12 min resolution</span>
+        </div>
+      </div>
+
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-950/60 text-indigo-300 text-xs font-bold uppercase tracking-wider mb-6 border border-indigo-700/50 shadow-sm backdrop-blur-md">
+        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
+        Instant Lab Hardware & Software Support
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight">
+        Report Lab Malfunctions.<br/>
+        <span class="aurora-text">Interactive Workstation Grid.</span>
+      </h1>
+
+      <p class="mt-5 text-slate-400 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto font-medium">
+        Green means operational, Red means broken. Click any seat to report or resolve issues in real time across all MG block computer labs.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="mt-9 flex flex-wrap justify-center gap-4">
+        <button onclick="openAuthModal('student', 'login')" class="px-7 py-3.5 rounded-xl text-white font-bold btn-aurora-student btn-shimmer flex items-center gap-2.5 text-sm shadow-lg shadow-indigo-600/30">
+          <i class="fa-solid fa-graduation-cap"></i> Student Portal
+        </button>
+        <button onclick="openAuthModal('technician', 'login')" class="px-7 py-3.5 rounded-xl text-white font-bold btn-aurora-tech btn-shimmer flex items-center gap-2.5 text-sm shadow-lg shadow-emerald-600/30">
+          <i class="fa-solid fa-wrench"></i> Technician Portal
+        </button>
+        <button onclick="openAuthModal('management', 'login')" class="px-7 py-3.5 rounded-xl text-white font-bold btn-aurora-mgmt btn-shimmer flex items-center gap-2.5 text-sm shadow-lg shadow-indigo-950/50">
+          <i class="fa-solid fa-chart-pie"></i> Management Portal
+        </button>
+      </div>
+
+      <!-- Live MG Labs Status Grid -->
+      <div class="mt-12 text-left">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-network-wired text-indigo-400"></i> MG Block Lab Health
+          </span>
+          <span class="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 9 Labs Active
+          </span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="glass-panel p-3.5 rounded-2xl border border-slate-800/90">
+            <div class="flex justify-between items-center mb-1.5">
+              <span class="text-xs font-bold text-white">Lab MG-001</span>
+              <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">100% OK</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+              <div class="bg-emerald-400 h-1.5 rounded-full" style="width: 100%"></div>
+            </div>
+            <span class="text-[10px] text-emerald-400 mt-1.5 block">60/60 PCs Active</span>
+          </div>
+
+          <div class="glass-panel p-3.5 rounded-2xl border border-slate-800/90">
+            <div class="flex justify-between items-center mb-1.5">
+              <span class="text-xs font-bold text-white">Lab MG-002</span>
+              <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">100% OK</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+              <div class="bg-emerald-400 h-1.5 rounded-full" style="width: 100%"></div>
+            </div>
+            <span class="text-[10px] text-emerald-400 mt-1.5 block">60/60 PCs Active</span>
+          </div>
+
+          <div class="glass-panel p-3.5 rounded-2xl border border-slate-800/90">
+            <div class="flex justify-between items-center mb-1.5">
+              <span class="text-xs font-bold text-white">Lab MG-401</span>
+              <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">100% OK</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+              <div class="bg-emerald-400 h-1.5 rounded-full" style="width: 100%"></div>
+            </div>
+            <span class="text-[10px] text-emerald-400 mt-1.5 block">60/60 PCs Active</span>
+          </div>
+
+          <div class="glass-panel p-3.5 rounded-2xl border border-slate-800/90">
+            <div class="flex justify-between items-center mb-1.5">
+              <span class="text-xs font-bold text-white">Lab MG-405</span>
+              <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">100% OK</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+              <div class="bg-emerald-400 h-1.5 rounded-full" style="width: 100%"></div>
+            </div>
+            <span class="text-[10px] text-emerald-400 mt-1.5 block">60/60 PCs Active</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Restored to Green Preview Card -->
+      <div class="mt-8 max-w-lg mx-auto glass-panel rounded-3xl p-5 text-left animate-float-3 border border-slate-800">
+        <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+          <div class="flex items-center gap-2.5">
+            <span class="radar-pulse-green"></span>
+            <span class="text-xs font-extrabold text-white uppercase tracking-wide">Live Workstation Status</span>
+          </div>
+          <span class="badge badge-completed font-bold shadow-sm shadow-emerald-500/25">
+            <i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Resolved (Back to Green)
+          </span>
+        </div>
+        <div class="mt-3.5 text-xs space-y-1.5 font-medium">
+          <div class="flex justify-between">
+            <span class="text-slate-400">Workstation:</span>
+            <span class="font-bold text-white">Lab MG-001 • SYS-14</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Issue Resolved:</span>
+            <span class="font-bold text-emerald-400">Mouse Replaced & Tested</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Current Health:</span>
+            <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 100% Operational (Green)
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT US SECTION -->
+    <section id="about-view" class="hidden space-y-10 py-6 max-w-4xl mx-auto animate-fade-in">
+      <div class="text-center space-y-4">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/60 text-cyan-300 text-xs font-bold uppercase tracking-wider border border-cyan-800/50 shadow-sm">
+          <i class="fa-solid fa-graduation-cap text-cyan-400"></i> Project Overview & Team
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          About <span class="aurora-text">LabFix</span> Portal
+        </h1>
+        <p class="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          An automated, paperless lab infrastructure maintenance and ticket resolution system built to eliminate academic lab downtime across MG-001 to MG-405.
+        </p>
+      </div>
+
+      <!-- Problem vs Solution -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-panel p-6 rounded-3xl border border-rose-500/20 bg-rose-950/10">
+          <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h3 class="text-lg font-black text-white mb-2">The Problem We Faced</h3>
+          <p class="text-xs text-slate-400 leading-relaxed font-medium">
+            During computer laboratory sessions, students frequently encounter hardware failures—missing mice, non-responsive keyboards, or blue-screen boot loops. Manually notifying lab in-charges or writing paper complaints takes valuable practical time and often goes untracked.
+          </p>
+        </div>
+
+        <div class="glass-panel p-6 rounded-3xl border border-emerald-500/20 bg-emerald-950/10">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h3 class="text-lg font-black text-white mb-2">Our Proposed Solution</h3>
+          <p class="text-xs text-slate-400 leading-relaxed font-medium">
+            <strong>LabFix</strong> bridges the gap between students, lab technicians, and department heads. Featuring an interactive visual seat layout across all 9 MG labs, students can see green (working) and red (broken) PCs, cancel issues, and watch systems turn back to green once repaired.
+          </p>
+        </div>
+      </div>
+
+      <!-- PROJECT CONTRIBUTORS CARD (Yashaswi, Lokesh, Mani Shankar, Varshith) -->
+      <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-indigo-500/30 space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-indigo-500/20">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div>
+              <span class="text-[11px] font-bold text-indigo-400 uppercase tracking-widest block">Project Contributors</span>
+              <h3 class="text-lg font-black text-white">Development Team</h3>
+            </div>
+          </div>
+          <button onclick="showHome()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-md">
+            Back to Portal <i class="fa-solid fa-arrow-right ml-1"></i>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 text-center space-y-1">
+            <div class="w-10 h-10 mx-auto rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm mb-2">Y</div>
+            <h4 class="font-bold text-white text-sm">Yashaswi</h4>
+            <span class="text-[10px] text-slate-400 block font-medium">Team Member</span>
+          </div>
+
+          <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 text-center space-y-1">
+            <div class="w-10 h-10 mx-auto rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-sm mb-2">L</div>
+            <h4 class="font-bold text-white text-sm">Lokesh</h4>
+            <span class="text-[10px] text-slate-400 block font-medium">Team Member</span>
+          </div>
+
+          <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 text-center space-y-1">
+            <div class="w-10 h-10 mx-auto rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mb-2">M</div>
+            <h4 class="font-bold text-white text-sm">Mani Shankar</h4>
+            <span class="text-[10px] text-slate-400 block font-medium">Team Member</span>
+          </div>
+
+          <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 text-center space-y-1">
+            <div class="w-10 h-10 mx-auto rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm mb-2">V</div>
+            <h4 class="font-bold text-white text-sm">Varshith</h4>
+            <span class="text-[10px] text-slate-400 block font-medium">Team Member</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENT DASHBOARD -->
+    <section id="student-view" class="hidden space-y-6">
+      
+      <!-- Student Tabs -->
+      <div class="flex border-b border-slate-800 gap-6 overflow-x-auto">
+        <button onclick="switchStudentTab('grid')" id="tab-btn-grid" class="pb-3 text-sm font-bold border-b-2 border-indigo-400 text-indigo-400 transition-colors whitespace-nowrap">
+          <i class="fa-solid fa-border-all mr-1"></i> Lab Floor Plan
+        </button>
+        <button onclick="switchStudentTab('raise')" id="tab-btn-raise" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition-colors whitespace-nowrap">
+          <i class="fa-solid fa-plus-circle mr-1"></i> Raise Issue
+        </button>
+        <button onclick="switchStudentTab('my-issues')" id="tab-btn-my-issues" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition-colors whitespace-nowrap">
+          <i class="fa-solid fa-list-check mr-1"></i> My Raised Issues (<span id="student-issue-count">0</span>)
+        </button>
+        <button onclick="switchStudentTab('profile')" id="tab-btn-profile" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition-colors whitespace-nowrap">
+          <i class="fa-solid fa-user-circle mr-1"></i> Student Profile
+        </button>
+      </div>
+
+      <!-- TAB 1: 60-SEAT LAB WORKSTATION MAP -->
+      <div id="subview-grid" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 animate-fade-in">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-5">
+          <div>
+            <h2 class="text-xl font-black text-white flex items-center gap-2">
+              <i class="fa-solid fa-network-wired text-indigo-400"></i>
+              Interactive Workstation Map (60 Systems)
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Select any of the 9 MG Labs. Click green to report; click red to view issue details.
+            </p>
+          </div>
+
+          <!-- Lab Selector with all 9 MG Labs -->
+          <div class="flex items-center gap-3">
+            <label class="text-xs font-bold text-slate-400 uppercase">Select Lab:</label>
+            <select id="grid-lab-select" onchange="renderSeatGrid()" class="px-4 py-2 border border-slate-700 bg-slate-900 rounded-xl text-xs font-bold text-white outline-none focus:ring-2 focus:ring-indigo-500">
+              <optgroup label="Ground Floor Labs">
+                <option value="MG-001" selected>MG-001</option>
+                <option value="MG-002">MG-002</option>
+                <option value="MG-003">MG-003</option>
+                <option value="MG-004">MG-004</option>
+              </optgroup>
+              <optgroup label="4th Floor Labs">
+                <option value="MG-401">MG-401</option>
+                <option value="MG-402">MG-402</option>
+                <option value="MG-403">MG-403</option>
+                <option value="MG-404">MG-404</option>
+                <option value="MG-405">MG-405</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex flex-wrap items-center justify-center gap-6 p-3 bg-slate-950/60 rounded-2xl border border-slate-800 text-xs font-semibold">
+          <div class="flex items-center gap-2">
+            <span class="w-4 h-4 rounded-md bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-[10px] text-emerald-400">✓</span>
+            <span class="text-slate-300">Green = Operational (Working)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-4 h-4 rounded-md bg-rose-500/20 border border-rose-500 flex items-center justify-center text-[10px] text-rose-400">✕</span>
+            <span class="text-slate-300">Red = Issue Reported (Broken)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-4 h-4 rounded-md bg-amber-500/20 border border-amber-500 flex items-center justify-center text-[10px] text-amber-400">⚙</span>
+            <span class="text-slate-300">Yellow = Technician Repairing</span>
+          </div>
+        </div>
+
+        <div class="text-center py-2 bg-slate-900/60 rounded-xl border border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+          🖥️ Front of Lab • Faculty Demonstration Bench & Projector Screen
+        </div>
+
+        <!-- 60 Seats Container (10 columns x 6 rows) -->
+        <div id="seats-grid-container" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 gap-2.5 pt-2">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- TAB 2: Raise Issue Form -->
+      <div id="subview-raise" class="hidden glass-panel rounded-3xl p-6 sm:p-8 max-w-2xl mx-auto interactive-card">
+        <h2 class="text-xl font-black text-white mb-1">Report System Malfunction</h2>
+        <p class="text-xs text-slate-400 mb-4 font-medium">Your request goes straight to the lab technician on duty.</p>
+
+        <!-- 1-Click Fast Presets -->
+        <div class="mb-5 p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800">
+          <span class="text-[11px] font-bold text-indigo-300 uppercase tracking-wider block mb-2">
+            <i class="fa-solid fa-bolt mr-1 text-indigo-400"></i> Fast 1-Click Presets:
+          </span>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="applyFormPreset('Mouse', 'Moderate', 'Mouse optical sensor not responding / left click jammed')" class="px-2.5 py-1.5 bg-slate-900 hover:bg-indigo-950 text-slate-300 hover:text-indigo-200 text-xs font-semibold rounded-lg border border-slate-700 transition-all">
+              🖱️ Missing Mouse
+            </button>
+            <button type="button" onclick="applyFormPreset('Keyboard', 'Moderate', 'Keyboard not recognized by system or keys physically stuck')" class="px-2.5 py-1.5 bg-slate-900 hover:bg-indigo-950 text-slate-300 hover:text-indigo-200 text-xs font-semibold rounded-lg border border-slate-700 transition-all">
+              ⌨️ Dead Keyboard
+            </button>
+            <button type="button" onclick="applyFormPreset('Monitor', 'High', 'Monitor has no power or blinking with no display output')" class="px-2.5 py-1.5 bg-slate-900 hover:bg-indigo-950 text-slate-300 hover:text-indigo-200 text-xs font-semibold rounded-lg border border-slate-700 transition-all">
+              🖥️ No Display
+            </button>
+            <button type="button" onclick="applyFormPreset('Internet / Network', 'Moderate', 'LAN cable disconnected or no network internet access')" class="px-2.5 py-1.5 bg-slate-900 hover:bg-indigo-950 text-slate-300 hover:text-indigo-200 text-xs font-semibold rounded-lg border border-slate-700 transition-all">
+              🌐 No Internet
+            </button>
+            <button type="button" onclick="applyFormPreset('CPU / Hardware', 'High', 'CPU does not power on after pressing power button')" class="px-2.5 py-1.5 bg-slate-900 hover:bg-indigo-950 text-slate-300 hover:text-indigo-200 text-xs font-semibold rounded-lg border border-slate-700 transition-all">
+              ⚡ Boot Failure
+            </button>
+          </div>
+        </div>
+
+        <form id="raise-issue-form" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Select Lab</label>
+              <select id="issue-lab" required class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold transition-all">
+                <optgroup label="Ground Floor Labs">
+                  <option value="MG-001" selected>MG-001</option>
+                  <option value="MG-002">MG-002</option>
+                  <option value="MG-003">MG-003</option>
+                  <option value="MG-004">MG-004</option>
+                </optgroup>
+                <optgroup label="4th Floor Labs">
+                  <option value="MG-401">MG-401</option>
+                  <option value="MG-402">MG-402</option>
+                  <option value="MG-403">MG-403</option>
+                  <option value="MG-404">MG-404</option>
+                  <option value="MG-405">MG-405</option>
+                </optgroup>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase mb-1">System / PC Number</label>
+              <input type="text" id="issue-system" required placeholder="e.g. SYS-14" class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900/90 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-medium transition-all">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Component / Problem</label>
+              <select id="issue-component" required class="w-full px-4 py-2.5 border rounded-xl border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-medium bg-slate-900 text-white">
+                <option value="Keyboard">Missing / Broken Keyboard</option>
+                <option value="Mouse">Faulty / Missing Mouse</option>
+                <option value="Monitor">No Display / Blinking Monitor</option>
+                <option value="CPU / Hardware">CPU Won't Boot / Hardware Failure</option>
+                <option value="Operating System / Software">Software Crash / Missing IDE</option>
+                <option value="Internet / Network">No Internet / LAN Cable Unplugged</option>
+                <option value="Other">Other Miscellaneous Issue</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Urgency Priority</label>
+              <select id="issue-priority" required class="w-full px-4 py-2.5 border rounded-xl border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-semibold bg-slate-900 text-white">
+                <option value="High">🔴 High (Workstation unusable)</option>
+                <option value="Moderate" selected>🟡 Moderate (Key stuck / Minor glitch)</option>
+                <option value="Low">🟢 Low (Cosmetic / Low urgency)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Issue Details</label>
+            <textarea id="issue-desc" rows="3" required placeholder="Describe what happens..." class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900/90 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-medium transition-all"></textarea>
+          </div>
+          <button type="submit" class="w-full py-3.5 btn-aurora-student btn-shimmer text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30">
+            <i class="fa-solid fa-paper-plane"></i> Submit Ticket (Mark Red on Grid)
+          </button>
+        </form>
+      </div>
+
+      <!-- TAB 3: My Issues -->
+      <div id="subview-my-issues" class="hidden glass-panel rounded-3xl overflow-hidden interactive-card">
+        <div class="p-5 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h2 class="text-lg font-black text-white">Your Reported Issues</h2>
+            <p class="text-xs text-slate-400">Issues turn green once cancelled by you or resolved by a technician.</p>
+          </div>
+          
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <div class="relative flex-1 sm:w-64">
+              <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+              <input type="text" id="student-search-input" oninput="filterStudentTable(this.value)" placeholder="Search PC, Lab, or component..." class="w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-indigo-400">
+            </div>
+            <button onclick="loadStudentIssues()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs text-indigo-400 font-bold flex items-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-950/70 text-slate-400 uppercase text-[11px] font-extrabold tracking-wider border-b border-slate-800">
+              <tr>
+                <th class="p-4">Lab & PC</th>
+                <th class="p-4">Problem</th>
+                <th class="p-4">Priority / State</th>
+                <th class="p-4">Status</th>
+                <th class="p-4">Action</th>
+                <th class="p-4">Reported</th>
+              </tr>
+            </thead>
+            <tbody id="student-issues-table-body" class="divide-y divide-slate-800 font-medium"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 4: Profile -->
+      <div id="subview-profile" class="hidden glass-panel rounded-3xl p-6 sm:p-8 max-w-xl mx-auto interactive-card">
+        <h2 class="text-xl font-black text-white mb-1">Student Profile</h2>
+        <p class="text-xs text-slate-400 mb-6">Keep your contact details up to date.</p>
+        <form id="profile-form" class="space-y-4 font-medium">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Full Name</label>
+            <input type="text" id="prof-name" class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900/90 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Roll Number</label>
+            <input type="text" id="prof-roll" class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900/90 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Department</label>
+            <input type="text" id="prof-dept" class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900/90 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Phone</label>
+            <input type="text" id="prof-phone" class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900/90 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm btn-shimmer shadow-lg shadow-indigo-600/30">
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TECHNICIAN VIEW (Separated into Active Work Queue & Resolved History Modules) -->
+    <section id="technician-view" class="hidden space-y-6">
+      
+      <!-- Module Switcher Tabs -->
+      <div class="flex border-b border-slate-800 gap-6">
+        <button onclick="switchTechTab('active')" id="tech-tab-active" class="pb-3 text-sm font-bold border-b-2 border-indigo-400 text-indigo-400 transition-colors flex items-center gap-2">
+          <i class="fa-solid fa-list-check"></i> Active Work Queue (<span id="tech-active-count">0</span>)
+        </button>
+        <button onclick="switchTechTab('completed')" id="tech-tab-completed" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+          <i class="fa-solid fa-circle-check text-emerald-400"></i> Resolved History Module (<span id="tech-completed-count">0</span>)
+        </button>
+      </div>
+
+      <!-- MODULE 1: ACTIVE WORK QUEUE (Pending & In Repair) -->
+      <div id="tech-active-module" class="space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass-panel p-6 rounded-3xl">
+          <div>
+            <h2 class="text-xl font-black text-white">Active Workstations Requiring Attention</h2>
+            <p class="text-xs text-slate-400 font-medium mt-0.5">High-priority hardware malfunctions appear first.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <select id="tech-filter-priority" onchange="loadTechnicianFeed()" class="px-3.5 py-2 border border-slate-700 rounded-xl text-xs font-bold bg-slate-900 text-white outline-none">
+              <option value="All">All Priorities</option>
+              <option value="High">🔴 High Priority</option>
+              <option value="Moderate">🟡 Moderate Priority</option>
+              <option value="Low">🟢 Low Priority</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="technician-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+
+      <!-- MODULE 2: COMPLETED & RESOLVED HISTORY (Separate Dedicated Module) -->
+      <div id="tech-completed-module" class="hidden glass-panel rounded-3xl overflow-hidden interactive-card">
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+          <div>
+            <h2 class="text-lg font-black text-white flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-check text-emerald-400"></i> Completed Repairs & Maintenance Log
+            </h2>
+            <p class="text-xs text-slate-400">History of resolved systems restored back to green.</p>
+          </div>
+          <button onclick="loadTechnicianFeed()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs text-emerald-400 font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-950/70 text-slate-400 uppercase text-[11px] font-extrabold tracking-wider border-b border-slate-800">
+              <tr>
+                <th class="p-4">Lab & PC</th>
+                <th class="p-4">Reported By</th>
+                <th class="p-4">Component Fixed</th>
+                <th class="p-4">Technician Remarks</th>
+                <th class="p-4">Status</th>
+                <th class="p-4">Resolved Date</th>
+              </tr>
+            </thead>
+            <tbody id="technician-completed-grid" class="divide-y divide-slate-800 font-medium"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- MANAGEMENT VIEW -->
+    <section id="management-view" class="hidden space-y-6">
+      <div class="glass-panel p-6 rounded-3xl space-y-5">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h2 class="text-2xl font-black text-white">Lab Infrastructure Analytics</h2>
+            <p class="text-xs text-slate-400 font-medium mt-0.5">Audit trail, resolution metrics, and hardware trends.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="exportAuditReportCSV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs font-bold text-white flex items-center gap-1.5 transition-colors shadow-sm">
+              <i class="fa-solid fa-file-csv"></i> Export CSV Report
+            </button>
+            <button onclick="loadManagementOverview()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-arrows-rotate"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-800">
+          <div>
+            <label class="block text-[11px] font-extrabold text-slate-400 uppercase mb-1">Status</label>
+            <select id="mgmt-filter-status" onchange="loadManagementOverview()" class="w-full text-xs font-bold border-slate-700 rounded-xl border p-2 bg-slate-900 text-white outline-none">
+              <option value="All">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Accepted">Accepted</option>
+              <option value="Processing">Processing</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-extrabold text-slate-400 uppercase mb-1">Lab</label>
+            <select id="mgmt-filter-lab" onchange="loadManagementOverview()" class="w-full text-xs font-bold border-slate-700 rounded-xl border p-2 bg-slate-900 text-white outline-none">
+              <option value="All">All 9 MG Labs</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-extrabold text-slate-400 uppercase mb-1">Month</label>
+            <select id="mgmt-filter-month" onchange="loadManagementOverview()" class="w-full text-xs font-bold border-slate-700 rounded-xl border p-2 bg-slate-900 text-white outline-none">
+              <option value="All">All Months</option>
+              <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+              <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+              <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+              <option value="10" selected>Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-extrabold text-slate-400 uppercase mb-1">Year</label>
+            <select id="mgmt-filter-year" onchange="loadManagementOverview()" class="w-full text-xs font-bold border-slate-700 rounded-xl border p-2 bg-slate-900 text-white outline-none">
+              <option value="All">All Years</option>
+              <option value="2026" selected>2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Glowing KPI Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="glass-panel p-5 rounded-3xl interactive-card">
+          <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Total Raised</span>
+          <p id="stat-total" class="text-3xl font-black text-white mt-1">0</p>
+        </div>
+        <div class="glass-panel p-5 rounded-3xl border border-amber-500/30 bg-amber-500/10 interactive-card">
+          <span class="text-[11px] font-extrabold text-amber-400 uppercase tracking-wider">Pending</span>
+          <p id="stat-pending" class="text-3xl font-black text-amber-400 mt-1">0</p>
+        </div>
+        <div class="glass-panel p-5 rounded-3xl border border-cyan-500/30 bg-cyan-500/10 interactive-card">
+          <span class="text-[11px] font-extrabold text-cyan-400 uppercase tracking-wider">Processing</span>
+          <p id="stat-processing" class="text-3xl font-black text-cyan-400 mt-1">0</p>
+        </div>
+        <div class="glass-panel p-5 rounded-3xl border border-emerald-500/30 bg-emerald-500/10 interactive-card">
+          <span class="text-[11px] font-extrabold text-emerald-400 uppercase tracking-wider">Resolved</span>
+          <p id="stat-completed" class="text-3xl font-black text-emerald-400 mt-1">0</p>
+        </div>
+        <div class="glass-panel p-5 rounded-3xl border border-indigo-500/30 bg-indigo-500/10 interactive-card">
+          <span class="text-[11px] font-extrabold text-indigo-400 uppercase tracking-wider">Success Rate</span>
+          <p id="stat-rate" class="text-3xl font-black text-indigo-400 mt-1">0%</p>
+        </div>
+      </div>
+
+      <!-- Incident Audit Log Table -->
+      <div class="glass-panel rounded-3xl overflow-hidden interactive-card">
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+          <h3 class="font-extrabold text-white">Incident Audit Log</h3>
+          <span id="mgmt-issue-count-badge" class="text-xs font-bold px-3 py-1 bg-slate-800 rounded-full text-slate-300">0 records</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-950/70 text-slate-400 uppercase text-[11px] font-extrabold tracking-wider border-b border-slate-800">
+              <tr>
+                <th class="p-4">Lab & PC</th>
+                <th class="p-4">Student</th>
+                <th class="p-4">Category</th>
+                <th class="p-4">Priority</th>
+                <th class="p-4">Status</th>
+                <th class="p-4">Technician</th>
+                <th class="p-4">Created</th>
+                <th class="p-4">Resolved</th>
+              </tr>
+            </thead>
+            <tbody id="mgmt-issues-table-body" class="divide-y divide-slate-800 font-medium"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- WORKSTATION INSPECTION MODAL -->
+  <div id="seat-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0f172a] text-slate-100 rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-7 relative border border-slate-800 animate-slide-down">
+      <button onclick="closeSeatModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div id="seat-modal-icon" class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black"></div>
+        <div>
+          <h3 id="seat-modal-title" class="text-xl font-black text-white">SYS-01</h3>
+          <span id="seat-modal-subtitle" class="text-xs text-slate-400 font-medium">MG-001</span>
+        </div>
+      </div>
+
+      <div id="seat-modal-body" class="p-4 bg-slate-950/70 rounded-2xl border border-slate-800 space-y-2.5 text-xs text-slate-300 mb-5"></div>
+
+      <div id="seat-modal-actions" class="flex gap-2"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#090d16]/90 border-t border-slate-800/80 mt-12 relative z-10 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+      <div class="flex items-center space-x-2">
+        <span class="font-bold text-white">LabFix</span>
+        <span>• Campus Lab Resolution Portal</span>
+      </div>
+      <div class="flex items-center space-x-6">
+        <button onclick="showHome()" class="hover:text-white transition-colors">Home</button>
+        <button onclick="showAboutPage()" class="hover:text-white transition-colors">About Us</button>
+        <span class="text-slate-600">|</span>
+        <span>Contributors: <strong class="text-slate-200">Yashaswi, Lokesh, Mani Shankar, Varshith</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING AI AGENT WIDGET -->
+  <div id="ai-agent-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div id="ai-chat-window" class="hidden mb-4 w-[90vw] sm:w-[26rem] max-w-sm bg-[#0f172a]/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/80 overflow-hidden flex flex-col animate-slide-down">
+      <div class="p-4 bg-gradient-to-r from-indigo-700 via-indigo-600 to-cyan-600 text-white flex justify-between items-center shadow-xs">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center text-sm shadow-xs">
+            <i class="fa-solid fa-sparkles"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-black tracking-wide">LabFix AI Assistant</h4>
+            <span class="text-[10px] text-cyan-200 block font-medium">Virtual Helpdesk & Analytics</span>
+          </div>
+        </div>
+        <button onclick="toggleAgentChat()" type="button" class="text-white/80 hover:text-white text-base px-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div id="ai-chat-messages" class="p-4 space-y-3.5 max-h-80 overflow-y-auto text-xs bg-[#0b0f19]/80">
+        <div class="bg-indigo-950/70 p-3.5 rounded-2xl rounded-tl-xs text-indigo-100 border border-indigo-800/60 shadow-2xs leading-relaxed font-medium">
+          👋 Hi! I'm your LabFix virtual assistant. Click a workstation to see health status, or ask me below:
+        </div>
+
+        <div id="ai-faq-chips" class="space-y-2 pt-1"></div>
+      </div>
+
+      <form id="ai-chat-form" onsubmit="handleAgentMessage(event)" class="p-3 border-t border-slate-800 bg-[#0f172a] flex gap-2">
+        <input type="text" id="ai-input" placeholder="Ask e.g. '2024 issues in oct'..." required class="flex-1 px-3.5 py-2.5 border rounded-xl border-slate-700 bg-slate-900 text-white text-xs outline-none focus:ring-2 focus:ring-indigo-500 font-medium placeholder-slate-500">
+        <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-colors shadow-xs">
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Trigger Button -->
+    <button onclick="toggleAgentChat()" type="button" class="h-14 w-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 hover:from-indigo-700 hover:to-cyan-600 text-white shadow-xl shadow-indigo-600/30 flex items-center justify-center text-xl btn-shimmer transition-transform group relative cursor-pointer border border-white/10">
+      <i class="fa-solid fa-robot group-hover:rotate-12 transition-transform"></i>
+      <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-900 rounded-full"></span>
+    </button>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div id="auth-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0f172a] text-slate-100 rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 relative border border-slate-800 animate-float-3">
+      <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <h3 id="modal-title" class="text-2xl font-black text-white tracking-tight">Sign In</h3>
+        <p class="text-xs text-slate-400 mt-1 font-medium">Choose your portal access role</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 p-1.5 bg-slate-900 rounded-2xl mb-5 border border-slate-800">
+        <button type="button" onclick="setAuthRole('student')" id="role-btn-student" class="py-2 text-xs font-bold rounded-xl bg-indigo-600 shadow-xs text-white transition-all">Student</button>
+        <button type="button" onclick="setAuthRole('technician')" id="role-btn-technician" class="py-2 text-xs font-semibold rounded-xl text-slate-400 transition-all">Technician</button>
+        <button type="button" onclick="setAuthRole('management')" id="role-btn-management" class="py-2 text-xs font-semibold rounded-xl text-slate-400 transition-all">Management</button>
+      </div>
+
+      <form id="auth-form" class="space-y-4">
+        <div id="signup-fields" class="space-y-4 hidden font-medium">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Full Name</label>
+            <input type="text" id="auth-name" placeholder="John Doe" class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div id="roll-field-container">
+            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Roll Number</label>
+            <input type="text" id="auth-roll" placeholder="22CS1049" class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <div class="font-medium">
+          <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Email</label>
+          <input type="email" id="auth-email" required placeholder="user@college.edu" class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="font-medium">
+          <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Password</label>
+          <input type="password" id="auth-password" required placeholder="••••••••" class="w-full px-4 py-2.5 border rounded-xl border-slate-700 bg-slate-900 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="w-full py-3.5 btn-aurora-student btn-shimmer text-white font-bold rounded-xl text-sm shadow-lg shadow-indigo-600/30">
+          Sign In
+        </button>
+      </form>
+
+      <div class="mt-4 text-center text-xs text-slate-400">
+        <span id="auth-toggle-prompt">Don't have an account?</span>
+        <button type="button" onclick="toggleAuthMode()" id="auth-toggle-link" class="text-indigo-400 font-bold ml-1 hover:underline">
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
